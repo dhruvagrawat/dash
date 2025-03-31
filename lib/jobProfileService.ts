@@ -5,14 +5,14 @@ import {
     DeleteItemCommand
 } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
-import { currentUser } from "@clerk/nextjs";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 // AWS Configuration
 const dynamoDBClient = new DynamoDBClient({
-    region: process.env.AWS_REGION,
+    region: process.env.AWS_REGION || '',
     credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || ''
     }
 });
 
@@ -22,14 +22,15 @@ export class JobProfileService {
 
     // Save Job Profile
     static async saveJobProfile(profile: any) {
-        const user = await currentUser();
-        if (!user) throw new Error('User not authenticated');
+        const { userId } = await auth();
+        if (!userId) throw new Error('User not authenticated');
 
+        const profileId = profile.id || Date.now().toString();
         const params = {
             TableName: this.TABLE_NAME,
             Item: marshall({
-                userId: user.id,
-                profileId: profile.id || Date.now().toString(),
+                userId: userId,
+                profileId: profileId,
                 ...profile,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
@@ -37,7 +38,7 @@ export class JobProfileService {
         };
 
         await dynamoDBClient.send(new PutItemCommand(params));
-        return profile;
+        return { ...profile, profileId };
     }
 
     // Fetch Job Profiles
@@ -48,9 +49,9 @@ export class JobProfileService {
         const params = {
             TableName: this.TABLE_NAME,
             KeyConditionExpression: 'userId = :userId',
-            ExpressionAttributeValues: {
-                ':userId': { S: user.id }
-            }
+            ExpressionAttributeValues: marshall({
+                ':userId': user.id
+            })
         };
 
         const { Items } = await dynamoDBClient.send(new QueryCommand(params));

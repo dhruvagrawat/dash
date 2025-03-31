@@ -113,7 +113,7 @@ export default function Page() {
     setCurrentStep('personal');
   };
 
-  const updateProfileField = (section: string, field: string, value: string, index = null) => {
+  const updateProfileField = (section: string, field: string, value: string, index: number | null = null) => {
     if (!editingProfile) return;
 
     const updatedProfile = { ...editingProfile };
@@ -139,7 +139,7 @@ export default function Page() {
         { ...INITIAL_JOB_PROFILE.education[0] }
       ]
     };
-    setEditingProfile(updatedProfile);
+    setEditingProfile({ ...updatedProfile, id: updatedProfile.id ?? 0, title: updatedProfile.title || '' });
   };
 
   const addWorkExperienceEntry = () => {
@@ -150,7 +150,8 @@ export default function Page() {
         { ...INITIAL_JOB_PROFILE.workExperience[0] }
       ]
     };
-    setEditingProfile(updatedProfile);
+    //@ts-ignore
+    setEditingProfile({ ...updatedProfile, id: updatedProfile.id ?? 0 });
   };
 
   const handleNextStep = () => {
@@ -168,8 +169,8 @@ export default function Page() {
   };
 
   const saveProfile = () => {
-    if (editingProfile.id) {
-      const existingIndex = jobProfiles.findIndex(p => p.id === editingProfile.id);
+    if (editingProfile && editingProfile.id) {
+      const existingIndex = editingProfile ? jobProfiles.findIndex(p => p.id === editingProfile.id) : -1;
 
       if (existingIndex !== -1) {
         const updatedProfiles = [...jobProfiles];

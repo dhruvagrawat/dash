@@ -317,7 +317,7 @@ export default function Page() {
                         <Label>GPA</Label>
                         <Input
                           value={edu.gpa}
-                          onChange={(e) => updateProfileField('education', 'gpa', e.target.value, index)}
+                          onChange={(e) => updateProfileField('education', 'gpa', e.target.value,)}
                           placeholder="e.g., 3.8"
                         />
                       </div>

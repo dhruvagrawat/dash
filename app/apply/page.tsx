@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, JSX } from "react";
 import { toast } from "react-hot-toast";
 import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
@@ -127,7 +127,7 @@ export default function JobApplicationFlow() {
 
   // Session timer effect
   useEffect(() => {
-    let interval: string | number | NodeJS.Timeout | undefined;
+    let interval: NodeJS.Timeout;
 
     if (sessionTimerActive && sessionTimeRemaining > 0) {
       interval = setInterval(() => {
@@ -149,7 +149,7 @@ export default function JobApplicationFlow() {
   }, [sessionTimerActive, sessionTimeRemaining]);
 
   // Platforms for job application
-  const platforms = [
+  const platforms: { name: keyof typeof JOB_PLATFORMS; icon: JSX.Element }[] = [
     { name: 'LinkedIn', icon: <Linkedin className="w-6 h-6" /> },
     { name: 'Indeed', icon: <Globe className="w-6 h-6" /> },
     { name: 'Glassdoor', icon: <Briefcase className="w-6 h-6" /> }
@@ -224,45 +224,10 @@ export default function JobApplicationFlow() {
 
     } catch (error) {
       if (error instanceof Error) {
-        if (error instanceof Error) {
-          if (error instanceof Error) {
-            if (error instanceof Error) {
-              if (error instanceof Error) {
-                if (error instanceof Error) {
-                  if (error instanceof Error) {
-                    toast.error(error.message);
-                  } else {
-                    toast.error('An unknown error occurred');
-                  }
-                } else {
-                  toast.error('An unknown error occurred');
-                }
-              } else {
-                toast.error('An unknown error occurred');
-              }
-            } else {
-              toast.error('An unknown error occurred');
-            }
-          } else {
-            toast.error('An unknown error occurred');
-          }
-        } else {
-          toast.error('An unknown error occurred');
-        }
+        toast.error(error.message);
+        addLog(`Error: ${error.message} ❌`);
       } else {
         toast.error('An unknown error occurred');
-      }
-      if (error instanceof Error) {
-        if (error instanceof Error) {
-          if (error instanceof Error) {
-            addLog(`Error: ${error.message} ❌`);
-          } else {
-            addLog('An unknown error occurred ❌');
-          }
-        } else {
-          addLog('An unknown error occurred ❌');
-        }
-      } else {
         addLog('An unknown error occurred ❌');
       }
       setSession(null);
@@ -303,8 +268,15 @@ export default function JobApplicationFlow() {
         addLog(`Started applying to jobs on ${selectedPlatform} 🎉`);
         addLog('The automation will run until completed or stopped manually');
       } catch (error) {
-        toast.error(error.message);
-        addLog(`Error: ${error.message} ❌`);
+        if (error instanceof Error) {
+          toast.error(error.message);
+          addLog(`Error: ${error.message} ❌`);
+        } else {
+          toast.error('An unknown error occurred');
+          addLog('An unknown error occurred ❌');
+        }
+      } finally {
+        setIsRunningTask(false);
       }
     }
   };
@@ -341,8 +313,13 @@ export default function JobApplicationFlow() {
       setIsReadyToApply(false);
       setIsRunningTask(false);
     } catch (error) {
-      toast.error(error.message);
-      addLog(`Error terminating session: ${error.message} ❌`);
+      if (error instanceof Error) {
+        toast.error(error.message);
+        addLog(`Error terminating session: ${error.message} ❌`);
+      } else {
+        toast.error('An unknown error occurred');
+        addLog('Error terminating session: Unknown error ❌');
+      }
     }
   };
 

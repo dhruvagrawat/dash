@@ -17,9 +17,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from "next/link";
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import {
   Pencil,
   FileText,
@@ -90,8 +89,8 @@ const INITIAL_JOB_PROFILE = {
 };
 
 export default function Page() {
-  const [jobProfiles, setJobProfiles] = useState([]);
-  const [editingProfile, setEditingProfile] = useState(null);
+  const [jobProfiles, setJobProfiles] = useState<typeof INITIAL_JOB_PROFILE[]>([]);
+  const [editingProfile, setEditingProfile] = useState<typeof INITIAL_JOB_PROFILE | null>(null);
   const [currentStep, setCurrentStep] = useState('personal');
 
   const addJobProfile = () => {
@@ -105,32 +104,34 @@ export default function Page() {
     }
   };
 
-  const removeJobProfile = (id) => {
+  const removeJobProfile = (id: any) => {
     setJobProfiles(jobProfiles.filter(profile => profile.id !== id));
   };
 
-  const startEditProfile = (profile) => {
+  const startEditProfile = (profile: SetStateAction<{ id: number; title: string; personalInfo: { fullName: string; professionalTitle: string; email: string; phone: string; location: string; summary: string; }; education: { degree: string; institution: string; fieldOfStudy: string; startDate: string; endDate: string; isCurrently: boolean; gpa: string; additionalDetails: string; }[]; workExperience: { jobTitle: string; company: string; location: string; startDate: string; endDate: string; isCurrently: boolean; responsibilities: string; achievements: string; }[]; skills: { technicalSkills: never[]; softSkills: never[]; certifications: never[]; }; createdDate: string; } | null>) => {
     setEditingProfile(profile);
     setCurrentStep('personal');
   };
 
-  const updateProfileField = (section, field, value, index = null) => {
+  const updateProfileField = (section: string, field: string, value: string, index = null) => {
     if (!editingProfile) return;
 
     const updatedProfile = { ...editingProfile };
 
     if (index !== null) {
       // For array fields like education or work experience
-      updatedProfile[section][index][field] = value;
+      (updatedProfile[section as keyof typeof updatedProfile] as any)[index][field] = value;
     } else {
       // For nested object fields
-      updatedProfile[section][field] = value;
+      (updatedProfile[section as keyof typeof updatedProfile] as any)[field] = value;
     }
 
-    setEditingProfile(updatedProfile);
+    setEditingProfile({ ...updatedProfile, id: updatedProfile.id || 0 });
   };
 
   const addEducationEntry = () => {
+    if (!editingProfile) return;
+
     const updatedProfile = {
       ...editingProfile,
       education: [
@@ -145,7 +146,7 @@ export default function Page() {
     const updatedProfile = {
       ...editingProfile,
       workExperience: [
-        ...editingProfile.workExperience,
+        ...(editingProfile?.workExperience || []),
         { ...INITIAL_JOB_PROFILE.workExperience[0] }
       ]
     };

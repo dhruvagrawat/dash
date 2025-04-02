@@ -1,39 +1,26 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-import { useAuth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server"; // Changed to server-side auth
 
 const f = createUploadthing();
-
-const middleware = async () => {
-    const { userId } = useAuth();
-    console.log("Middleware userId:", userId);
-
-    if (!userId) {
-        throw new UploadThingError("Unauthorized");
-    }
-    return { userId };
-};
-
-const onUploadComplete = async ({
-    metadata,
-    file
-}: {
-    metadata: Awaited<ReturnType<typeof middleware>>
-    file: any
-}) => {
-    console.log("Upload completed for:", metadata.userId);
-    console.log("File data:", file);
-    return { success: true };
-};
 
 export const ourFileRouter = {
     resumeUploader: f({
         pdf: { maxFileSize: "4MB", maxFileCount: 1 },
-        // doc: { maxFileSize: "4MB" }, // Removed as it is not a valid key
-        // docx: { maxFileSize: "4MB" }
+        "application/msword": { maxFileSize: "4MB" }, // DOC files
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": { // DOCX
+            maxFileSize: "4MB"
+        }
     })
-        .middleware(middleware)
-        .onUploadComplete(onUploadComplete),
+        .middleware(async () => {
+            const { userId } = await auth();
+            if (!userId) throw new UploadThingError("Unauthorized");
+            return { userId };
+        })
+        .onUploadComplete(async ({ file }) => {
+            // Return the file URL to the client
+            return { url: file.url };
+        }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

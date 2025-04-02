@@ -1,0 +1,76 @@
+{
+    "personal_info": {
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "phone": "+1 (123) 456-7890",
+        "address": "123 Main St, City, Country",
+        "linkedin": "linkedin.com/in/johndoe",
+        "github": "github.com/johndoe",
+        "portfolio": "johndoe.dev"
+    },
+    "summary": "Experienced software engineer with 5+ years in full-stack development...",
+    "education": [
+        {
+            "degree": "Bachelor of Science in Computer Science",
+            "institution": "University of Example",
+            "year": "2015-2019",
+            "gpa": "3.8/4.0"
+        }
+    ],
+    "experience": [
+        {
+            "position": "Senior Software Engineer",
+            "company": "Tech Corp Inc.",
+            "duration": "2020-Present",
+            "responsibilities": [
+                "Led development of customer portal",
+                "Implemented CI/CD pipeline",
+                "Mentored junior developers"
+            ]
+        }
+    ],
+    "skills": {
+        "technical": [
+            "JavaScript",
+            "Node.js",
+            "React",
+            "MongoDB",
+            "AWS"
+        ],
+        "soft": [
+            "Team Leadership",
+            "Communication",
+            "Problem Solving"
+        ]
+    },
+    "projects": [
+        {
+            "name": "E-commerce Platform",
+            "description": "Full-stack e-commerce solution with React and Node.js",
+            "technologies": [
+                "React",
+                "Node.js",
+                "MongoDB"
+            ],
+            "year": "2021"
+        }
+    ],
+    "certifications": [
+        {
+            "name": "AWS Certified Developer",
+            "issuer": "Amazon Web Services",
+            "year": "2020"
+        }
+    ],
+    "languages": [
+        {
+            "name": "English",
+            "proficiency": "Native"
+        },
+        {
+            "name": "Spanish",
+            "proficiency": "Intermediate"
+        }
+    ]
+}
+//    basic info can upgarde to many otehr forms 

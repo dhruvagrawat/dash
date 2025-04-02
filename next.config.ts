@@ -1,15 +1,16 @@
-// next.config.js or next.config.ts
-import { NextConfig } from 'next';
-
-const nextConfig: NextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: '/vnc/:path*',
-        destination: 'http://44.218.170.241:6080/:path*', // Rewrite to your VNC server
-      },
-    ];
+// next.config.js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  swcMinify: true,
+  env: {
+    AWS_REGION: process.env.AWS_REGION,
   },
-};
+  // Don't expose AWS credentials to the browser
+  serverRuntimeConfig: {
+    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+}
 
-export default nextConfig;
+module.exports = nextConfig

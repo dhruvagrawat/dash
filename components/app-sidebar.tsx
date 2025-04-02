@@ -50,6 +50,12 @@ const data = {
       badge: "10",
     },
     {
+      title: "AI Profile Maker",
+      url: "/ai-profile-maker",
+      icon: Inbox,
+      badge: "10",
+    },
+    {
       title: "History",
       url: "/history",
       icon: Inbox,

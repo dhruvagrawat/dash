@@ -6,11 +6,12 @@ from haystack import Pipeline
 from haystack.nodes import BM25Retriever
 from haystack.document_stores import InMemoryDocumentStore
 from haystack.nodes import PreProcessor, PromptModel, PromptTemplate, PromptNode
+from dotenv import load_dotenv
+import os
 
 pdf_file_path = "D:/RAJ ARYAN/Docs/RESUME_RAJ_ARYAN.pdf"
 
-HF_TOKEN = getpass("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")
-
+HF_TOKEN = ""
 
 def extract_text_from_pdf(pdf_path):
     text = ""

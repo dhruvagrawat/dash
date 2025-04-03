@@ -96,7 +96,9 @@ export default function UploadPage() {
                                 }}
                                 onUploadError={(error: Error) => {
                                     setUploadStatus({
-                                        error: error.message
+                                        error: error.message.includes("Failed to upload to S3")
+                                            ? "Failed to store in S3 (check server logs)"
+                                            : error.message
                                     });
                                 }}
                                 appearance={{
@@ -128,13 +130,24 @@ export default function UploadPage() {
 
                             {uploadStatus.success && (
                                 <Alert className="mt-4 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
-                                    <Terminal className="h-4 w-4 text-green-600 dark:text-green-300" />
                                     <AlertTitle className="text-green-800 dark:text-green-200">
                                         Upload Successful!
                                     </AlertTitle>
                                     <AlertDescription className="text-green-700 dark:text-green-300">
                                         {uploadStatus.success}
                                     </AlertDescription>
+                                    {uploadStatus.url && (
+                                        <AlertDescription>
+                                            <Link
+                                                href={uploadStatus.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-blue-600 dark:text-blue-300 hover:underline break-all"
+                                            >
+                                                S3 URL: {uploadStatus.url}
+                                            </Link>
+                                        </AlertDescription>
+                                    )}
                                 </Alert>
                             )}
 

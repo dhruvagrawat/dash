@@ -4,7 +4,6 @@ import { ourFileRouter } from "./core";
 export const { GET, POST } = createRouteHandler({
     router: ourFileRouter,
     config: {
-        // Removed invalid property 'uploadthingId'
-        // uploadthingSecret: process.env.UPLOADTHING_SECRET,
+        callbackUrl: `${process.env.NEXT_PUBLIC_UPLOADTHING_URL}/api/uploadthing`,
     },
 });
